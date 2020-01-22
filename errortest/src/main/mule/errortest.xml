@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:american-flights-api="http://www.mulesoft.org/schema/mule/american-flights-api" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/american-flights-api http://www.mulesoft.org/schema/mule/american-flights-api/current/mule-american-flights-api.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="90a20cec-139f-42f0-b2c6-a700b03b8bd2" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="errortestFlow" doc:id="592b3008-4acf-44e5-9406-321fdada6570" >
+		<http:listener doc:name="Listener" doc:id="5c01a72a-6295-4a6a-9457-551a98857508" config-ref="HTTP_Listener_config" path="error"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="d80f5ed4-ed9c-466d-905c-52cad00c4c34" />
+		<ee:transform doc:name="Transform Message" doc:id="1813f025-6b41-47bc-b1fa-21ee9e6778dc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.Name]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="a9682a37-09e1-49ed-b137-02a813bc4f2d" message="#[payload]"/>
+		<error-handler>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8d0d5d88-0e93-456b-805e-7e005d5c033d" >
+				<set-payload value="unable to accept" doc:name="Set Payload" doc:id="c27e5bf4-5db2-45fc-9548-4fe547325c7a" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>
