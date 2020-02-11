@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b53c701a-faad-42f9-81cd-ab668da3fbed" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="testgitFlow" doc:id="776e2087-227e-4750-8c72-083c3fa1b0c4" >
+		<http:listener doc:name="Listener" doc:id="c6220079-ad5f-4f90-b9f9-3a841bdfe3b4" config-ref="HTTP_Listener_config" path="error"/>
+		<ee:transform doc:name="Transform Message" doc:id="c9391545-9cdc-45af-8997-4ac20cd0393a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.id]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="23c62cfb-26fa-4e1d-967b-b722590cbbc4" message="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e98b20c9-3292-44be-9c48-68b0e864ac16" message="#[payload]"/>
+	</flow>
+</mule>
